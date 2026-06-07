@@ -103,5 +103,28 @@ if ($method == 'GET') {
         http_response_code(400);
         echo json_encode(["status" => "error", "message" => "Missing parameters 'id' and 'is_maintenance'."]);
     }
+} elseif ($method == 'DELETE') {
+    // Delete court (Completing CRUD)
+    $id = isset($_GET['id']) ? $_GET['id'] : null;
+    
+    if (!empty($id)) {
+        $query = "DELETE FROM fields WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        
+        if ($stmt->execute()) {
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Court deleted successfully"
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["status" => "error", "message" => "Failed to delete court"]);
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode(["status" => "error", "message" => "Missing parameter 'id'."]);
+    }
 }
 ?>
